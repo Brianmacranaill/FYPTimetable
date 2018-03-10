@@ -8,7 +8,6 @@ public class Module {
 	String className;
 	
 
-	/**Requires String moduleCode, String moduleName, String lecturerName, Boolean lectureOrLab, String className*/	
 	public Module(String moduleCode, String moduleName, String lecturerName, Boolean lectureOrLab, String className) {
 		super();
 		this.moduleCode = moduleCode;

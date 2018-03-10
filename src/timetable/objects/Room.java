@@ -6,10 +6,9 @@ public class Room {
 	int numSeats;
 	boolean isLabRoom;
 	String location;
-	String[] timetable;
-	//String array to show timetable of room, filled with true/false to show if class is in slot.
+	Boolean[] timetable;
 	
-	public Room(int numSeats, boolean isLabRoom, String location) {
+	public Room(int numSeats, boolean isLabRoom, String location, Boolean[] timetable) {
 		super();
 		this.numSeats = numSeats;
 		this.isLabRoom = isLabRoom;
@@ -35,10 +34,10 @@ public class Room {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public String[] gettimetable() {
+	public Boolean[] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(String[] timetable) {
+	public void settimetable(Boolean[] timetable) {
 		this.timetable = timetable;
 	}
 	
@@ -53,7 +52,7 @@ public class Room {
 		{
 			room = "Lecture";
 		}
-		return "Room: \n\tLocation = " + location + "\n\tRoom Type = " + room + "\n\tAmount of seats = " + numSeats + "\n\ttimetable = " + Arrays.toString(timetable);
+		return "Room: \n\tLocation = " + location + "\n\tRoom Type = " + room + "\n\tAmount of seats = " + numSeats + "\n\tTimetable Availability(true = taken) = " + Arrays.toString(timetable);
 	}
 	
 	

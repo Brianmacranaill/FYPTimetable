@@ -21,7 +21,7 @@ public class Main extends Application {
 		int a = 0;
 		int b = 9;
 		while (a<9) {
-			timeSlots[a] = b;
+			timeSlots[a] = b-8;
 			a++;
 			b++;
 		}
@@ -35,25 +35,29 @@ public class Main extends Application {
 		listOfRooms[4] = "IT2.2";
 		listOfRooms[5] = "IT2.3";
 		System.out.println("\nAvailable Rooms: " + Arrays.toString(listOfRooms) + "\n");
-		//Object testing		
+		
 		Module module = new Module("TestCode", "TestName", "TestLecturer", true, "test");
 				
-		String[] listOfModules = new String[6];
-		listOfModules[0] = "Module1";
-		listOfModules[1] = "Module2";
-		listOfModules[2] = "Module3";
-		listOfModules[3] = "Module4";
-		listOfModules[4] = "Module5";
-		listOfModules[5] = "Module6";
-				
-		ClassGroup classGroup = new ClassGroup("Software Development", "SDH4", 35, listOfModules);
-				
-		Room room = new Room(47, true, "C127");
+		Boolean[] classGroupAvailability = new Boolean[9];
+		for (int i=0; i<9; i++)
+		{
+			classGroupAvailability[i] = false;
+		}		
+		ClassGroup classGroup = new ClassGroup("Software Development", "SDH4", 35, classGroupAvailability);
 		
-		String[] lecturerModules = new String[2];
-		lecturerModules[0] = "Big Data & Analytics";
-		lecturerModules[1] = "C Programming";
-		Lecturer lecturer = new Lecturer("Nacho", lecturerModules);
+		Boolean[] roomAvailability = new Boolean[9];
+		for (int i=0; i<9; i++)
+		{
+			roomAvailability[i] = false;
+		}
+		Room room = new Room(47, true, "C127", roomAvailability);
+		
+		Boolean[] lecturerAvailability = new Boolean[9];
+		for (int i=0; i<9; i++)
+		{
+			lecturerAvailability[i] = false;
+		}
+		Lecturer lecturer = new Lecturer("Nacho", lecturerAvailability);
 		System.out.println(module.toString() + "\n");
 		System.out.println(classGroup.toString() + "\n");
 		System.out.println(room.toString() + "\n");

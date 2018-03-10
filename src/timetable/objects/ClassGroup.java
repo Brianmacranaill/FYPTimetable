@@ -6,10 +6,9 @@ public class ClassGroup {
 	String className;
 	String classCode;
 	int numStudents;
-	String[] timetable;
+	Boolean[] timetable;
 	
-	/**Requires String className, String classCode, int numStudents*/
-	public ClassGroup(String className, String classCode, int numStudents, String[] timetable) {
+	public ClassGroup(String className, String classCode, int numStudents, Boolean[] timetable) {
 		super();
 		this.className = className;
 		this.classCode = classCode;
@@ -34,15 +33,15 @@ public class ClassGroup {
 	public void setNumStudents(int numStudents) {
 		this.numStudents = numStudents;
 	}
-	public String[] gettimetable() {
+	public Boolean[] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(String[] timetable) {
+	public void settimetable(Boolean[] timetable) {
 		this.timetable = timetable;
 	}
 	@Override
 	public String toString() {
-		return "Class Group Details: \n\tClass Name = " + className + "\n\tClass Code = " + classCode + "\n\tAmount of Students = " + numStudents + "\n\tList of timetable = " + Arrays.toString(timetable);
+		return "Class Group Details: \n\tClass Name = " + className + "\n\tClass Code = " + classCode + "\n\tAmount of Students = " + numStudents + "\n\tTimetable Availability(true = taken) = " + Arrays.toString(timetable);
 	}
 	
 	

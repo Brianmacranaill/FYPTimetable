@@ -4,10 +4,9 @@ import java.util.Arrays;
 
 public class Lecturer {
 	String name;
-	String[] timetable;
+	Boolean[] timetable;
 	
-	/**Requires String name, String[] timetable*/
-	public Lecturer(String name, String[] timetable) {
+	public Lecturer(String name, Boolean[] timetable) {
 		super();
 		this.name = name;
 		this.timetable = timetable;
@@ -18,15 +17,15 @@ public class Lecturer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String[] gettimetable() {
+	public Boolean[] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(String[] timetable) {
+	public void settimetable(Boolean[] timetable) {
 		this.timetable = timetable;
 	}
 	
 	@Override
 	public String toString() {
-		return "Lecturer Details: \n\tName = " + name + "\n\ttimetable = " + Arrays.toString(timetable);
+		return "Lecturer Details: \n\tName = " + name + "\n\tTimetable Availability(true = taken) = " + Arrays.toString(timetable);
 	}
 }
