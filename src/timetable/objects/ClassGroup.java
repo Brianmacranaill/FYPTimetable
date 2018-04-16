@@ -6,10 +6,9 @@ public class ClassGroup {
 	String className;
 	String classCode;
 	int numStudents;
-	Boolean[] timetable;
+	boolean[][] timetable;
 	
-	public ClassGroup(String className, String classCode, int numStudents, Boolean[] timetable) {
-		super();
+	public ClassGroup(String className, String classCode, int numStudents, boolean[][] timetable) {
 		this.className = className;
 		this.classCode = classCode;
 		this.numStudents = numStudents;
@@ -33,10 +32,10 @@ public class ClassGroup {
 	public void setNumStudents(int numStudents) {
 		this.numStudents = numStudents;
 	}
-	public Boolean[] gettimetable() {
+	public boolean[][] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(Boolean[] timetable) {
+	public void settimetable(boolean[][] timetable) {
 		this.timetable = timetable;
 	}
 	@Override

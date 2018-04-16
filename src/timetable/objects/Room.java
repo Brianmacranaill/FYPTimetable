@@ -6,10 +6,9 @@ public class Room {
 	int numSeats;
 	boolean isLabRoom;
 	String location;
-	Boolean[] timetable;
+	boolean[][] timetable;
 	
-	public Room(int numSeats, boolean isLabRoom, String location, Boolean[] timetable) {
-		super();
+	public Room(int numSeats, boolean isLabRoom, String location, boolean[][] timetable) {
 		this.numSeats = numSeats;
 		this.isLabRoom = isLabRoom;
 		this.location = location;
@@ -34,10 +33,10 @@ public class Room {
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	public Boolean[] gettimetable() {
+	public boolean[][] getTimetable() {
 		return timetable;
 	}
-	public void settimetable(Boolean[] timetable) {
+	public void setTimetable(boolean[][] timetable) {
 		this.timetable = timetable;
 	}
 	
@@ -45,7 +44,7 @@ public class Room {
 	@Override
 	public String toString() {
 		String room = "";
-		if (isLabRoom = true) {
+		if (isLabRoom == true) {
 			room = "Lab";
 		}
 		else

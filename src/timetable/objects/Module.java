@@ -9,7 +9,6 @@ public class Module {
 	
 
 	public Module(String moduleCode, String moduleName, String lecturerName, Boolean lectureOrLab, String className) {
-		super();
 		this.moduleCode = moduleCode;
 		this.moduleName = moduleName;
 		this.lecturerName = lecturerName;
@@ -51,13 +50,13 @@ public class Module {
 	@Override
 	public String toString() {
 		String classType = "";
-		if (lectureOrLab = true) {
+		if (lectureOrLab == false) {
 			classType = "Lecture";
 		}
 		else {
 			classType = "Lab";
 		}
-		return "Module Details: \n\tModule Code = " + moduleCode + "\n\tModule Name = " + moduleName + "\n\tLecturer Name = " + lecturerName + "\n\tClass Type = " + classType + "\n\tClass Name = " + className;
+		return "Module Details: \n\tModule Code = " + moduleCode + "\n\tModule Name = " + moduleName + "\n\tLecturer Name = " + lecturerName + "\n\tClass Type = " + classType + "\n\tClass Name = " + className + "\n";
 	}
 	
 }

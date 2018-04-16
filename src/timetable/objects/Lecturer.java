@@ -1,13 +1,15 @@
 package timetable.objects;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Lecturer {
 	String name;
-	Boolean[] timetable;
+	boolean[][] timetable;
+	Module module;
+	ArrayList<Module> lecturerModuleList = new ArrayList<Module>();
 	
-	public Lecturer(String name, Boolean[] timetable) {
-		super();
+	public Lecturer(String name, ArrayList<Module> lecturerModuleList, boolean[][] timetable) {
 		this.name = name;
 		this.timetable = timetable;
 	}
@@ -17,10 +19,16 @@ public class Lecturer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Boolean[] gettimetable() {
+	public ArrayList<Module> getModuleList(){
+		return lecturerModuleList;
+	}
+	public void setModuleList(ArrayList<Module> lecturerModuleList) {
+		this.lecturerModuleList = lecturerModuleList;
+	}
+	public boolean[][] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(Boolean[] timetable) {
+	public void settimetable(boolean[][] timetable) {
 		this.timetable = timetable;
 	}
 	
