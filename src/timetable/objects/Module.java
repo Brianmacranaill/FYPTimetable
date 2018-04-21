@@ -49,14 +49,7 @@ public class Module {
 	
 	@Override
 	public String toString() {
-		String classType = "";
-		if (lectureOrLab == false) {
-			classType = "Lecture";
-		}
-		else {
-			classType = "Lab";
-		}
-		return "Module Details: \n\tModule Code = " + moduleCode + "\n\tModule Name = " + moduleName + "\n\tLecturer Name = " + lecturerName + "\n\tClass Type = " + classType + "\n\tClass Name = " + className + "\n";
+		return "Module Details: \n\tModule Code = " + moduleCode + "\n\tModule Name = " + moduleName + "\n\tLecturer Name = " + lecturerName + "\n\tClass Type = " + lectureOrLab + "\n\tClass Name = " + className + "\n";
 	}
 	
 }

@@ -43,15 +43,7 @@ public class Room {
 
 	@Override
 	public String toString() {
-		String room = "";
-		if (isLabRoom == true) {
-			room = "Lab";
-		}
-		else
-		{
-			room = "Lecture";
-		}
-		return "Room: \n\tLocation = " + location + "\n\tRoom Type = " + room + "\n\tAmount of seats = " + numSeats + "\n\tTimetable Availability(true = taken) = " + Arrays.toString(timetable);
+		return "Room: \n\tLocation = " + location + "\n\tRoom Type = " + isLabRoom + "\n\tAmount of seats = " + numSeats + "\n\tTimetable Availability(true = taken) = " + Arrays.toString(timetable);
 	}
 	
 	

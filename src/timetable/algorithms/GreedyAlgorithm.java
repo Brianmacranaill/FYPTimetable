@@ -10,7 +10,6 @@ import timetable.objects.Module;
 import timetable.objects.Room;
 
 public class GreedyAlgorithm {
-	static int testcounter = 0;
 	public static String[][] greedyAlgorithmSolver(ArrayList<Module> moduleList, ArrayList<Lecturer> lecturerList, ArrayList<Room> roomList, ArrayList<ClassGroup> classGroupList, ArrayList<Room> listOfLabRooms, ArrayList<Room> listOfLectureRooms){
 		int n = 9;//Amount of hours in each day.
 		int days = 5;//5 days of the week for classes
@@ -38,12 +37,12 @@ public class GreedyAlgorithm {
 		Stack<Module> moduleListStack = new Stack<Module>();//Timetables added into stack, simple to manage
 		moduleListStack.addAll(moduleList);
 		//String[][] createdTimetable = basicTimetableEntry(days, timeSlot, timetable, moduleListStack);
-		String[][] createdTimetable = randomTimetableEntry(days, timeSlot, timetable, moduleListStack, listOfLectureRooms, listOfLabRooms, classGroupList);
+		String[][] createdTimetable = randomTimetableEntry(days, timeSlot, timetable, moduleListStack, listOfLectureRooms, listOfLabRooms, classGroupList, lecturerList);
 		//System.out.println(createdTimetable[0][8]);//[1][2] = empty(without moving around)
 		return createdTimetable;
 	}
 	
-	public static String[][] randomTimetableEntry(int days, int timeSlot, String[][] timetable, Stack<Module> moduleList, ArrayList<Room> listOfLectureRooms, ArrayList<Room> listOfLabRooms, ArrayList<ClassGroup> classGroupList){//Creates timetable with modules entered at random positions
+	public static String[][] randomTimetableEntry(int days, int timeSlot, String[][] timetable, Stack<Module> moduleList, ArrayList<Room> listOfLectureRooms, ArrayList<Room> listOfLabRooms, ArrayList<ClassGroup> classGroupList, ArrayList<Lecturer> lecturerList){//Creates timetable with modules entered at random positions
 		Module temporaryModule = moduleList.get(0);
 		Random ran = new Random();
 		int a=ran.nextInt(days);
@@ -78,8 +77,8 @@ public class GreedyAlgorithm {
 					}
 				}
 				temporaryModule = moduleList.pop();
-				System.out.println("ree");
-				assignRoom(a, b, temporaryModule, listOfLectureRooms, listOfLabRooms, classGroupList, timetable);//Room allocation. Sometimes doesn't give a timeslot a room. Fix this
+				assignRoom(a, b, temporaryModule, listOfLectureRooms, listOfLabRooms, classGroupList, lecturerList, timetable);//Room allocation. Sometimes doesn't give a timeslot a room. Fix this
+				
 			}
 		}
 		return timetable;
@@ -110,7 +109,7 @@ public class GreedyAlgorithm {
 		return timetable;
 	}
 	
-	public static String[][] assignRoom(int a, int b, Module module, ArrayList<Room> lectureRooms, ArrayList<Room> labRooms, ArrayList<ClassGroup> classGroupList, String[][] timetable)
+	public static String[][] assignRoom(int a, int b, Module module, ArrayList<Room> lectureRooms, ArrayList<Room> labRooms, ArrayList<ClassGroup> classGroupList, ArrayList<Lecturer> lecturerList, String[][] timetable)
 	{	//Check if module is lab or lecture
 		//Check if selected timeslot is free for class group, room and lecturer
 		//Check if the amount of seats fits the classgroup
@@ -119,73 +118,96 @@ public class GreedyAlgorithm {
 		Random ran = new Random();
 		int randomNumber = 0;
 		int classGroupListCounter = 0;
+		int lecturerListCounter = 0;
+		String temporaryLecturerName = "";
 		boolean tempRoomTimetable[][] = new boolean[5][9];
+		boolean tempLecturerTimetable[][] = new boolean[5][9];
 		boolean tempClassGroupTimetable[][] = new boolean[5][9];
-
-		if(module.getLectureOrLab() == false)//Lecture
+		while(!timetable[a][b].contains("|") && !timetable[a][b].contains("\\"))//"|" checks that a room is assigned, "\\" checks if the lecturer name is assigned
 		{
-			randomNumber = ran.nextInt(numLectureRooms);
-			if(lectureRooms.get(randomNumber).getNumSeats() <= classGroupList.get(classGroupListCounter).getNumStudents())//Compares number of seats to number of students in class group 0 here is for SDH4(Before adding multiple class groups)
+			if(module.getLectureOrLab() == false)//Lecture
 			{
-				//Assign lecture room to time slot for class group. Change class timetable from boolean to string, then store module there?
-				while(classGroupList.get(classGroupListCounter).gettimetable()[a][b] == false)//Currently can't get into this loop. Always true
+				
+				randomNumber = ran.nextInt(numLectureRooms);
+				if(lectureRooms.get(randomNumber).getNumSeats() <= classGroupList.get(classGroupListCounter).getNumStudents())//Compares number of seats to number of students in class group 0 here is for SDH4(Before adding multiple class groups)
 				{
-					if(lectureRooms.get(randomNumber).getTimetable()[a][b] == false)
+					//Assign lecture room to time slot for class group. Change class timetable from boolean to string, then store module there?
+					while(classGroupList.get(classGroupListCounter).gettimetable()[a][b] == false)//Checks if the class group's timetable is free
 					{
-						tempRoomTimetable = lectureRooms.get(randomNumber).getTimetable();
-						tempRoomTimetable[a][b] = true;
-						lectureRooms.get(randomNumber).setTimetable(tempRoomTimetable);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
-						
-						tempClassGroupTimetable = classGroupList.get(classGroupListCounter).gettimetable();
-						tempClassGroupTimetable[a][b] = true;
-						classGroupList.get(classGroupListCounter).settimetable(tempClassGroupTimetable);
-						
-						timetable[a][b]+= "|" +  lectureRooms.get(randomNumber).getLocation();
-						
-						System.out.println(testcounter);
-						testcounter++;
-						
-						//Add in lecturer's timetable assignment
-					}
-					else
-					{
-						randomNumber = ran.nextInt(numLectureRooms);
+						if(lectureRooms.get(randomNumber).getTimetable()[a][b] == false)//Checks if room timetable is free
+						{
+							tempRoomTimetable = lectureRooms.get(randomNumber).getTimetable();
+							tempRoomTimetable[a][b] = true;
+							lectureRooms.get(randomNumber).setTimetable(tempRoomTimetable);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
+							
+							tempClassGroupTimetable = classGroupList.get(classGroupListCounter).gettimetable();
+							tempClassGroupTimetable[a][b] = true;
+							classGroupList.get(classGroupListCounter).settimetable(tempClassGroupTimetable);
+							lecturerListCounter=0;
+							while(lecturerListCounter < lecturerList.size())//Finding the correct lecturer for the module
+							{
+								if(module.getLecturerName() == lecturerList.get(lecturerListCounter).getName()) {
+									temporaryLecturerName = lecturerList.get(lecturerListCounter).getName();
+									break;
+								}
+								lecturerListCounter+=1;
+							}
+							if(lecturerList.get(lecturerListCounter).gettimetable()[a][b] == false) {//Lecturer Timetable Checking
+								tempLecturerTimetable = lecturerList.get(lecturerListCounter).gettimetable();
+								tempLecturerTimetable[a][b] = true;
+								lecturerList.get(lecturerListCounter).settimetable(tempLecturerTimetable);
+								timetable[a][b]+= "|" +  lectureRooms.get(randomNumber).getLocation() + "\\" + temporaryLecturerName;
+							}
+						}
+						else
+						{
+							randomNumber = ran.nextInt(numLectureRooms);
+						}
 					}
 				}
 			}
-		}
-		else
-		{
-			randomNumber = ran.nextInt(numLabRooms);
-			if(labRooms.get(randomNumber).getNumSeats() <= classGroupList.get(classGroupListCounter).getNumStudents())
+			else//Lab
 			{
-				//Assign lecture room to time slot for class group. Change class timetable from boolean to string, then store module there?
-				while(classGroupList.get(classGroupListCounter).gettimetable()[a][b] == false)//Currently can't get into this loop. Always true
+				randomNumber = ran.nextInt(numLabRooms);
+				if(labRooms.get(randomNumber).getNumSeats() <= classGroupList.get(classGroupListCounter).getNumStudents())
 				{
-					if(labRooms.get(randomNumber).getTimetable()[a][b] == false)
+					//Assign lecture room to time slot for class group. Change class timetable from boolean to string, then store module there?
+					while(classGroupList.get(classGroupListCounter).gettimetable()[a][b] == false)//Currently can't get into this loop. Always true
 					{
-						tempRoomTimetable = labRooms.get(randomNumber).getTimetable();
-						tempRoomTimetable[a][b] = true;
-						labRooms.get(randomNumber).setTimetable(tempRoomTimetable);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
-						
-						tempClassGroupTimetable = classGroupList.get(classGroupListCounter).gettimetable();
-						tempClassGroupTimetable[a][b] = true;
-						classGroupList.get(classGroupListCounter).settimetable(tempClassGroupTimetable);
-						
-						timetable[a][b] += "|" +  labRooms.get(randomNumber).getLocation();
-						timetable[a][b+1] += "|" +  labRooms.get(randomNumber).getLocation();
-						
-						System.out.println(testcounter);
-						testcounter++;
-						
-						//Add in lecturer's timetable assignment
-					}
-					else
-					{
-						randomNumber = ran.nextInt(numLabRooms);
+						if(labRooms.get(randomNumber).getTimetable()[a][b] == false)
+						{
+							tempRoomTimetable = labRooms.get(randomNumber).getTimetable();
+							tempRoomTimetable[a][b] = true;
+							labRooms.get(randomNumber).setTimetable(tempRoomTimetable);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
+							
+							tempClassGroupTimetable = classGroupList.get(classGroupListCounter).gettimetable();
+							tempClassGroupTimetable[a][b] = true;
+							classGroupList.get(classGroupListCounter).settimetable(tempClassGroupTimetable);
+							lecturerListCounter=0;
+							while(lecturerListCounter < lecturerList.size())//Finding the correct lecturer for the module
+							{
+								if(module.getLecturerName() == lecturerList.get(lecturerListCounter).getName()) {
+									temporaryLecturerName = lecturerList.get(lecturerListCounter).getName();
+									break;
+								}
+								lecturerListCounter+=1;
+							}
+							if(lecturerList.get(lecturerListCounter).gettimetable()[a][b] == false) {//Lecturer Timetable Checking
+								tempLecturerTimetable = lecturerList.get(lecturerListCounter).gettimetable();
+								tempLecturerTimetable[a][b] = true;
+								lecturerList.get(lecturerListCounter).settimetable(tempLecturerTimetable);
+								timetable[a][b] += "|" +  labRooms.get(randomNumber).getLocation() + "\\" + temporaryLecturerName;
+								timetable[a][b+1] += "|" +  labRooms.get(randomNumber).getLocation() + "\\" + temporaryLecturerName;
+							}
+						}
+						else
+						{
+							randomNumber = ran.nextInt(numLabRooms);
+						}
 					}
 				}
 			}
+			
 		}
 		return timetable;
 	}

@@ -147,7 +147,7 @@ public class Main extends Application {
 //		System.out.println(SDH4ModuleList.get(10));
 
 		ArrayList<ClassGroup> classGroupList = new  ArrayList<ClassGroup>();
-		ClassGroup classGroup1 = new ClassGroup("Software Development 4", "SDH4", 50, assignEmptyTimetable());
+		ClassGroup classGroup1 = new ClassGroup("Software Development 4", "SDH4", 30, assignEmptyTimetable());
 		classGroupList.add(classGroup1);
 		
 		ArrayList<Module> larkinModuleList = new ArrayList<Module>();
