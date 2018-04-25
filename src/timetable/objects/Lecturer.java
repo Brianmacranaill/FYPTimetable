@@ -9,7 +9,7 @@ public class Lecturer {
 	Module module;
 	ArrayList<Module> lecturerModuleList = new ArrayList<Module>();
 	
-	public Lecturer(String name, ArrayList<Module> lecturerModuleList, boolean[][] timetable) {
+	public Lecturer(String name, boolean[][] timetable) {
 		this.name = name;
 		this.timetable = timetable;
 	}
@@ -19,17 +19,11 @@ public class Lecturer {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public ArrayList<Module> getModuleList(){
-		return lecturerModuleList;
-	}
-	public void setModuleList(ArrayList<Module> lecturerModuleList) {
-		this.lecturerModuleList = lecturerModuleList;
-	}
 	public boolean[][] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(boolean[][] timetable) {
-		this.timetable = timetable;
+	public void settimetable(int a, int b, boolean timetable) {
+		this.timetable[a][b] = timetable;
 	}
 	
 	@Override

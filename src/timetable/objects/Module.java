@@ -3,15 +3,14 @@ package timetable.objects;
 public class Module {
 	String moduleCode;
 	String moduleName;
-	String lecturerName;
+	Lecturer lecturer;
 	Boolean lectureOrLab;
 	String className;
 	
 
-	public Module(String moduleCode, String moduleName, String lecturerName, Boolean lectureOrLab, String className) {
+	public Module(String moduleCode, String moduleName, Boolean lectureOrLab, String className) {
 		this.moduleCode = moduleCode;
 		this.moduleName = moduleName;
-		this.lecturerName = lecturerName;
 		this.lectureOrLab = lectureOrLab;
 		this.className = className;
 	}
@@ -28,11 +27,11 @@ public class Module {
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
-	public String getLecturerName() {
-		return lecturerName;
+	public Lecturer getLecturer() {
+		return lecturer;
 	}
-	public void setLecturerName(String lecturerName) {
-		this.lecturerName = lecturerName;
+	public void setLecturer(Lecturer lecturer) {
+		this.lecturer = lecturer;
 	}
 	public Boolean getLectureOrLab() {
 		return lectureOrLab;
@@ -49,7 +48,7 @@ public class Module {
 	
 	@Override
 	public String toString() {
-		return "Module Details: \n\tModule Code = " + moduleCode + "\n\tModule Name = " + moduleName + "\n\tLecturer Name = " + lecturerName + "\n\tClass Type = " + lectureOrLab + "\n\tClass Name = " + className + "\n";
+		return "Module Details: \n\tModule Code = " + moduleCode + "\n\tModule Name = " + moduleName + "\n\tLecturer Name = " + lecturer + "\n\tClass Type = " + lectureOrLab + "\n\tClass Name = " + className + "\n";
 	}
 	
 }
