@@ -33,6 +33,11 @@ public class Main extends Application {
 		launch(args);
 	}
 	
+	public static void database()
+	{
+		
+	}
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception{
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -107,6 +112,7 @@ public class Main extends Application {
 		primaryStage.show();
 		
 	}
+	
 	
 	/**Sets stage dimensions. Default is full screen size. add in double value(max 1) to change size
 	 * @param stage What stage to edit
@@ -355,6 +361,6 @@ public class Main extends Application {
 		}
 		return timetable;
 	}
-	
+
 	
 }
