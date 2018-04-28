@@ -11,7 +11,6 @@ import timetable.objects.Room;
 
 public class GreedyAlgorithm {
 	public static String[][] greedyAlgorithmSolver(ArrayList<Module> moduleList, ArrayList<Lecturer> lecturerList, ArrayList<Room> roomList, ClassGroup classGroup, ArrayList<Room> listOfLabRooms, ArrayList<Room> listOfLectureRooms){
-		System.out.println("In greedyalgorithmsolver");
 		int n = 9;//Amount of hours in each day.
 		int days = 5;//5 days of the week for classes
 		int timeSlot = 0;
@@ -40,12 +39,10 @@ public class GreedyAlgorithm {
 		//String[][] createdTimetable = basicTimetableEntry(days, timeSlot, timetable, moduleListStack);
 		String[][] createdTimetable = randomTimetableEntry(days, timeSlot, timetable, moduleListStack, listOfLectureRooms, listOfLabRooms, classGroup, lecturerList);
 		//System.out.println(createdTimetable[0][8]);//[1][2] = empty(without moving around)
-		System.out.println("Finished greedyalgorithmsolver");
 		return createdTimetable;
 	}
 
 	public static String[][] randomTimetableEntry(int days, int timeSlot, String[][] timetable, Stack<Module> moduleList, ArrayList<Room> listOfLectureRooms, ArrayList<Room> listOfLabRooms, ClassGroup classGroup, ArrayList<Lecturer> lecturerList){//Creates timetable with modules entered at random positions
-		System.out.println("In randomtimetableentry");
 		Random ran = new Random();
 		int a;
 		int b;
@@ -87,7 +84,6 @@ public class GreedyAlgorithm {
 			assignRoom(a, b, temporaryModule, listOfLectureRooms, listOfLabRooms, classGroup, lecturerList, timetable);//Room allocation. Sometimes doesn't give a timeslot a room. Fix this
 				//random call of assignRoom breaks on second timetable creation
 		}
-		System.out.println("Finished randomtimetableentry");
 		return timetable;
 	}
 
@@ -120,23 +116,16 @@ public class GreedyAlgorithm {
 	{	//Check if module is lab or lecture
 		//Check if selected timeslot is free for class group, room and lecturer
 		//Check if the amount of seats fits the classgroup
-		System.out.println("In assignroom");	
 		int numLectureRooms = lectureRooms.size();
 		int numLabRooms = labRooms.size();
 		Random ran = new Random();
 		int randomNumber = 0;
-		int lecturerListCounter = 0;
-		String temporaryLecturerName = "";
 		boolean tempRoomTimetable[][] = new boolean[5][9];
-		boolean tempLecturerTimetable[][] = new boolean[5][9];
 		boolean tempClassGroupTimetable[][] = new boolean[5][9];
 		//		while(!timetable[a][b].contains("|") && !timetable[a][b].contains("\\"))//"|" checks that a room is assigned, "\\" checks if the lecturer name is assigned
 		//		{
-		System.out.println("Print1");
-		System.out.println(module.getLectureOrLab() == false ? "Lecture" : "Lab");
 		if(module.getLectureOrLab() == false)//Lecture
 		{
-			System.out.println("Print2");
 			randomNumber = ran.nextInt(numLectureRooms);
 			while(lectureRooms.get(randomNumber).getNumSeats() <= classGroup.getNumStudents() && lectureRooms.get(randomNumber).getTimetable()[a][b] != false)//Compares number of seats to number of students in class group 0 here is for SDH4(Before adding multiple class groups)
 			{
@@ -154,12 +143,11 @@ public class GreedyAlgorithm {
 
 			module.getLecturer().settimetable(a, b, true);
 
-			timetable[a][b] += "|" +  lectureRooms.get(randomNumber).getLocation() + "\\" + module.getLecturer().getName();
+			timetable[a][b] += "|" +  lectureRooms.get(randomNumber).getLocation() + "\\" + module.getLecturer().getName() + "/" + classGroup.getClassCode();
 				
 		}
 		else//Lab
 		{
-			System.out.println("Print2");
 			randomNumber = ran.nextInt(numLabRooms);
 			while(labRooms.get(randomNumber).getNumSeats() <= classGroup.getNumStudents() && labRooms.get(randomNumber).getTimetable()[a][b] != false)//Compares number of seats to number of students in class group 0 here is for SDH4(Before adding multiple class groups)
 			{
@@ -176,18 +164,15 @@ public class GreedyAlgorithm {
 			tempClassGroupTimetable[a][b] = true;
 			tempClassGroupTimetable[a][b+1] = true;
 			classGroup.settimetable(tempClassGroupTimetable);
-			lecturerListCounter=0;
 
 			module.getLecturer().settimetable(a, b, true);
 			module.getLecturer().settimetable(a, b+1, true);
-
-			timetable[a][b] += "|" +  labRooms.get(randomNumber).getLocation() + "\\" + module.getLecturer().getName();
-			timetable[a][b+1] += "|" +  labRooms.get(randomNumber).getLocation() + "\\" + module.getLecturer().getName();
+			timetable[a][b] += "|" +  labRooms.get(randomNumber).getLocation() + "\\" + module.getLecturer().getName() + "/" + classGroup.getClassCode();
+			timetable[a][b+1] += "|" +  labRooms.get(randomNumber).getLocation() + "\\" + module.getLecturer().getName() + "/" + classGroup.getClassCode();
 				
 		}
 
 		//		}
-		System.out.println("Finished assignroom");
 		return timetable;
 	}
 }

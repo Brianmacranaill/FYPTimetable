@@ -40,14 +40,13 @@ public class Main extends Application {
 	
 	static String timetableToCreateOption = "";
 	private static final String DATABASE_URL = "https://timetable-5673f.firebaseio.com";
-	private FirebaseDatabase firebaseDatabase;
+	private static FirebaseDatabase firebaseDatabase;
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
-	public void writeToFirebase() throws IOException//Make this method work with all time slots
-	{
+	public void firebaseSetup() throws IOException {
 		FileInputStream serviceAccount = new FileInputStream("C:/Users/Brian/Dropbox/timetableDB/timetable-5673f-firebase-adminsdk-ujdb6-fb9f4122b5.json");
 
 		FirebaseOptions options = new FirebaseOptions.Builder()
@@ -57,21 +56,70 @@ public class Main extends Application {
 
 		FirebaseApp.initializeApp(options);
 		firebaseDatabase = FirebaseDatabase.getInstance();
+		DatabaseReference ref = firebaseDatabase.getReference("classes");
+		ref.removeValue();
+	}
+	
+	public static String[] splitStringForTimetable(String timeslotData) {
+		String[] splitData = new String[4];
+		String[] data = timeslotData.split("\\|");
+		splitData[0] = data[0];
+		data = data[1].split("\\\\");
+		splitData[1] = data[0];
+		data = data[1].split("\\/");
+		splitData[2] = data[0];
+		splitData[3] = data[1];		
+		return splitData;
+	}
+	
+	public static void writeToFirebase(String[][] timetable) throws IOException//Make this method work with all time slots
+	{
+		int dayCounter = 0;//Max = 5
+		int timeSlotCounter = 0;//Max = 9
+		
+//		String classes = "classes";
+//		String classGroup = "SDH4";
+//		String day = "Monday";
+//		String timeSlot = "9";
+//		String classAtTime = "module|room\\lecturer/classGroup";
+		String[] splitStorage = new String[4];
+		dayCounter = 0;
+		timeSlotCounter = 0;
+		DatabaseReference ref = firebaseDatabase.getReference("classes");
+		
+		while (dayCounter < 5)//Use this loop to split stuff and add to the database
+		{
+			while(timeSlotCounter < 9)
+			{
+				if(timetable[dayCounter][timeSlotCounter] != "empty") {
+					splitStorage = splitStringForTimetable(timetable[dayCounter][timeSlotCounter]);
+					//Upload to database here
+					ref.child(splitStorage[3]).child(String.valueOf(dayCounter)).child(String.valueOf(timeSlotCounter)).child(splitStorage[0]).child(splitStorage[2]).setValueAsync(splitStorage[1]);
+				}
+				//System.out.print(timetable[dayCounter][timeSlotCounter] + "\t");
+				timeSlotCounter++;
+			}
+			dayCounter++;
+			if (timeSlotCounter == 9)
+			{
+				timeSlotCounter = 0;
+				//System.out.print("\n");
+			}
+		}
+		
+		
+		
+		//splitStringForTimetable(classAtTime);
 
-		String classGroup = "SDH4";
-		String day = "Monday";
-		String timeSlot = "9";
-		String classAtTime = "module|room\\lecturer";
-
-
-		DatabaseReference ref = firebaseDatabase.getReference(classGroup);
-		ref.child(day).child(timeSlot).setValue(classAtTime);
-
+//		DatabaseReference ref = firebaseDatabase.getReference(classes);
+//		ref.child(classGroup).child(day).child(timeSlot).setValueAsync(classAtTime);
 
 	}
 	
+	
 	@Override
 	public void start(Stage primaryStage) throws Exception{
+		firebaseSetup();
 		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 		BorderPane root = new BorderPane();
 		Button runAlgorithmButton, uploadAlgorithmToDatabaseButton, exit;
@@ -81,7 +129,6 @@ public class Main extends Application {
 		Label label2 = new Label("Timetable shown here?");
 		
 		double screenSizeMultiplier = .5;//Change this value to change the amount of screen taken by the GUI
-		writeToFirebase();
 		primaryStage.setTitle("Timetable Scheduler");
 		runAlgorithmButton = new Button();
 		runAlgorithmButton.setText("Run Algorithm");
@@ -155,6 +202,7 @@ public class Main extends Application {
 		stage.setY(screenBounds.getMinY());
 		stage.setWidth(screenBounds.getWidth() * widthPercentage);
 		stage.setHeight(screenBounds.getHeight() * heightPercentage);
+		stage.setResizable(false);
 		return stage;
 	}
 	
@@ -181,10 +229,7 @@ public class Main extends Application {
 		SDH4ModuleList.add(NoSQLLecture);
 		SDH4ModuleList.add(EmbeddedSystemsLab);
 		SDH4ModuleList.add(EmbeddedSystemsLecture);
-//		System.out.println(SDH4ModuleList.get(0));
-//		System.out.println(SDH4ModuleList.get(1));
-//		System.out.println(SDH4ModuleList.get(9));
-//		System.out.println(SDH4ModuleList.get(10));
+
 		ArrayList<Module> SDH3ModuleList = new ArrayList<Module>();
 		Module DistributedSystemsLab = new Module("SOFT8023", "Distributed Systems Programming Lab", true, "SDH3");
 		Module DistributedSystemsLecture = new Module("SOFT8023", "Distributed Systems Programming Lecture", false, "SDH3");
@@ -205,12 +250,67 @@ public class Main extends Application {
 		SDH3ModuleList.add(NoSQLLab);
 		SDH3ModuleList.add(NoSQLLecture);
 		
+		ArrayList<Module> SDH2ModuleList = new ArrayList<Module>();
+		Module objectOrientedPrinciplesLab = new Module("SOFT7004", "Object Oriented Principles Lab", true, "SDH2");
+		Module objectOrientedPrinciplesLecture = new Module("SOFT7004", "Object Oriented Principles Lecture", false, "SDH2");
+		Module introToDatabasesLab = new Module("COMP6041", "Introduction to Databases Lab", true, "SDH2");
+		Module introToDatabasesLecture = new Module("COMP6041", "Introduction to Databases Lecture", false, "SDH2");
+		Module operatingSystemsInPracticeLab = new Module("COMP6042", "Operating Systems In Practice Lab", true, "SDH2");
+		Module operatingSystemsInPracticeLecture = new Module("COMP6042", "perating Systems In Practice Lecture", false, "SDH2");
+		Module requirementsEngineeringLab = new Module("SOFT7007", "Requirements Engineering Lab", true, "SDH2");
+		Module requirementsEngineeringLecture = new Module("SOFT7007", "Requirements Engineering Lecture", false, "SDH2");
+		Module linearDataStructuresLab = new Module("COMP7035", "Linear Data Struct & Alg Lab", true, "SDH2");
+		Module linearDataStructuresLecture = new Module("COMP7035", "Linear Data Struct & Alg Lecture", false, "SDH2");
+		Module discreteMathsLab = new Module("MATH6004", "Discrete Maths Lab", true, "SDH2");
+		Module discreteMathsLecture = new Module("MATH6004", "Discrete Maths Lecture", false, "SDH2");
+		SDH2ModuleList.add(objectOrientedPrinciplesLab);
+		SDH2ModuleList.add(objectOrientedPrinciplesLecture);
+		SDH2ModuleList.add(introToDatabasesLab);
+		SDH2ModuleList.add(introToDatabasesLecture);
+		SDH2ModuleList.add(operatingSystemsInPracticeLab);
+		SDH2ModuleList.add(operatingSystemsInPracticeLecture);
+		SDH2ModuleList.add(requirementsEngineeringLab);
+		SDH2ModuleList.add(requirementsEngineeringLecture);
+		SDH2ModuleList.add(linearDataStructuresLab);
+		SDH2ModuleList.add(linearDataStructuresLecture);
+		SDH2ModuleList.add(discreteMathsLab);
+		SDH2ModuleList.add(discreteMathsLecture);
+		
+		ArrayList<Module> SDH1ModuleList = new ArrayList<Module>();
+		Module programmingFundamentalsLab = new Module("SOFT6018", "Programming Fundamentals Lab", true, "SDH1");
+		Module programmingFundamentalsLecture = new Module("SOFT6018", "Programming Fundamentals Lecture", false, "SDH1");
+		Module CITLab = new Module("CMOD6001", "Creativity Innovation & Teamwork Lab", true, "SDH1");
+		Module CITLecture = new Module("CMOD6001", "Creativity Innovation & Teamwork Lecture", false, "SDH1");
+		Module webDevFundamentalsLab = new Module("SOFT6007", "Web Development Fundamentals Lab", true, "SDH1");
+		Module webDevFundamentalsLecture = new Module("SOFT6007", "Web Development Fundamentals Lecture", false, "SDH1");
+		Module computerArchitectureLab = new Module("COMH6002", "Computer Architecture Lab", true, "SDH1");
+		Module computerArchitectureLecture = new Module("COMH6002", "Computer Architecture Lecture", false, "SDH1");
+		Module computerSecurityPrinciplesLab = new Module("COMP6035", "Computer Security Principles Lab", true, "SDH1");
+		Module computerSecurityPrinciplesLecture = new Module("COMP6035", "Computer Security Principles Lecture", false, "SDH1");
+		Module MathsForCSLab = new Module("MATH6055", "Maths For Computer Science Lab", true, "SDH1");
+		Module MathsForCSLecture = new Module("MATH6055", "Maths For Computer Science Lecture", false, "SDH1");
+		SDH1ModuleList.add(programmingFundamentalsLab);
+		SDH1ModuleList.add(programmingFundamentalsLecture);
+		SDH1ModuleList.add(CITLab);
+		SDH1ModuleList.add(CITLecture);
+		SDH1ModuleList.add(webDevFundamentalsLab);
+		SDH1ModuleList.add(webDevFundamentalsLecture);
+		SDH1ModuleList.add(computerArchitectureLab);
+		SDH1ModuleList.add(computerArchitectureLecture);
+		SDH1ModuleList.add(computerSecurityPrinciplesLab);
+		SDH1ModuleList.add(computerSecurityPrinciplesLecture);
+		SDH1ModuleList.add(MathsForCSLab);
+		SDH1ModuleList.add(MathsForCSLecture);
 		
 		ArrayList<ClassGroup> classGroupList = new  ArrayList<ClassGroup>();
 		ClassGroup classGroup1 = new ClassGroup("Software Development 4", "SDH4", 30, assignEmptyTimetable());
 		ClassGroup classGroup2 = new ClassGroup("Software Development 3", "SDH3", 32, assignEmptyTimetable());
+		ClassGroup classGroup3 = new ClassGroup("Software Development 2", "SDH2", 35, assignEmptyTimetable());
+		ClassGroup classGroup4 = new ClassGroup("Software Development 1", "SDH1", 40, assignEmptyTimetable());
 		classGroupList.add(classGroup1);
 		classGroupList.add(classGroup2);
+		classGroupList.add(classGroup3);
+		classGroupList.add(classGroup4);
 		
 		Lecturer lecturer1 = new Lecturer("Larkin Cunningham", assignEmptyTimetable());
 		AppDevLab.setLecturer(lecturer1);
@@ -221,6 +321,8 @@ public class Main extends Application {
 		Lecturer lecturer2 = new Lecturer("Sean McSweeney", assignEmptyTimetable());
 		SoftwareSecurityLab.setLecturer(lecturer2);
 		SoftwareSecurityLecture.setLecturer(lecturer2);
+		computerSecurityPrinciplesLab.setLecturer(lecturer2);
+		computerSecurityPrinciplesLecture.setLecturer(lecturer2);
 		
 		Lecturer lecturer3 = new Lecturer("Ted Scully", assignEmptyTimetable());
 		MachineLearningLab.setLecturer(lecturer3);
@@ -229,6 +331,8 @@ public class Main extends Application {
 		Lecturer lecturer4 = new Lecturer("Oonagh O'Brien", assignEmptyTimetable());
 		NoSQLLab.setLecturer(lecturer4);
 		NoSQLLecture.setLecturer(lecturer4);
+		introToDatabasesLab.setLecturer(lecturer4);
+		introToDatabasesLecture.setLecturer(lecturer4);
 		
 		Lecturer lecturer5 = new Lecturer("Paul Davern", assignEmptyTimetable());
 		EmbeddedSystemsLab.setLecturer(lecturer5);
@@ -237,6 +341,8 @@ public class Main extends Application {
 		Lecturer lecturer6 = new Lecturer("Denis Long", assignEmptyTimetable());
 		DistributedSystemsLab.setLecturer(lecturer6);
 		DistributedSystemsLecture.setLecturer(lecturer6);
+		objectOrientedPrinciplesLab.setLecturer(lecturer6);
+		objectOrientedPrinciplesLecture.setLecturer(lecturer6);
 
 		Lecturer lecturer7 = new Lecturer("Karl Grabe", assignEmptyTimetable());
 		ProgrammingMobileLab.setLecturer(lecturer7);
@@ -245,6 +351,40 @@ public class Main extends Application {
 		Lecturer lecturer8 = new Lecturer("Ignacio Castineiras", assignEmptyTimetable());
 		CProgrammingLab.setLecturer(lecturer8);
 		CProgrammingLecture.setLecturer(lecturer8);
+		linearDataStructuresLab.setLecturer(lecturer8);
+		linearDataStructuresLecture.setLecturer(lecturer8);
+		
+		Lecturer lecturer9 = new Lecturer("Paul Rothwell", assignEmptyTimetable());
+		operatingSystemsInPracticeLab.setLecturer(lecturer9);
+		operatingSystemsInPracticeLecture.setLecturer(lecturer9);
+		
+		Lecturer lecturer10 = new Lecturer("Mary Davin", assignEmptyTimetable());
+		requirementsEngineeringLab.setLecturer(lecturer10);
+		requirementsEngineeringLecture.setLecturer(lecturer10);
+		
+		Lecturer lecturer11 = new Lecturer("Michael Brennan", assignEmptyTimetable());
+		discreteMathsLab.setLecturer(lecturer11);
+		discreteMathsLecture.setLecturer(lecturer11);
+		
+		Lecturer lecturer12 = new Lecturer("Cliona Mc Guane", assignEmptyTimetable());
+		programmingFundamentalsLab.setLecturer(lecturer12);
+		programmingFundamentalsLecture.setLecturer(lecturer12);
+		
+		Lecturer lecturer13 = new Lecturer("Catherine Frehill", assignEmptyTimetable());
+		CITLab.setLecturer(lecturer13);
+		CITLecture.setLecturer(lecturer13);
+		
+		Lecturer lecturer14 = new Lecturer("Irene Foley", assignEmptyTimetable());
+		webDevFundamentalsLab.setLecturer(lecturer14);
+		webDevFundamentalsLecture.setLecturer(lecturer14);
+		
+		Lecturer lecturer15 = new Lecturer("John Creagh", assignEmptyTimetable());
+		computerArchitectureLab.setLecturer(lecturer15);
+		computerArchitectureLecture.setLecturer(lecturer15);
+		
+		Lecturer lecturer16 = new Lecturer("Marie Nicholson", assignEmptyTimetable());
+		MathsForCSLab.setLecturer(lecturer16);
+		MathsForCSLecture.setLecturer(lecturer16);
 		
 		ArrayList<Lecturer> lecturerList = new ArrayList<Lecturer>();//Contains all lecturers
 		lecturerList.add(lecturer1);
@@ -255,6 +395,9 @@ public class Main extends Application {
 		lecturerList.add(lecturer6);
 		lecturerList.add(lecturer7);
 		lecturerList.add(lecturer8);
+		lecturerList.add(lecturer9);
+		lecturerList.add(lecturer10);
+		lecturerList.add(lecturer11);
 		
 		ArrayList<Room> listOfLectureRooms = new ArrayList<Room>();//All rooms to be added here
 		ArrayList<Room> listOfLabRooms = new ArrayList<Room>();
@@ -287,70 +430,55 @@ public class Main extends Application {
 		allRooms.addAll(listOfLabRooms);
 		allRooms.addAll(listOfLectureRooms);
 		
-		//greedyalgorithm call here for X lists.
-		createTimetable(SDH4ModuleList, lecturerList, allRooms, classGroup1, listOfLabRooms, listOfLectureRooms);
-		System.out.println("|||||||||||||||||||||||||||");
-		createTimetable(SDH3ModuleList, lecturerList, allRooms, classGroup2, listOfLabRooms, listOfLectureRooms);
-//		String timetable[][] = GreedyAlgorithm.greedyAlgorithmSolver(SDH4ModuleList, lecturerList, allRooms, classGroupList, listOfLabRooms, listOfLectureRooms);
-//		int dayCounter=0, timeslotCounter = 0;
-//		//System.out.print("9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00\n");
-//		while (dayCounter < 5)
-//		{
-//			while(timeslotCounter < 9)
-//			{
-//				System.out.print(timetable[dayCounter][timeslotCounter] + "\t");
-//				timeslotCounter++;
-//			}
-//			dayCounter++;
-//			if (timeslotCounter == 9)
-//			{
-//				timeslotCounter = 0;
-//				System.out.print("\n");
-//			}
-//		}
-//		//System.exit(0);
-//		System.out.println("\n");
+		//greedyalgorithm call here for classes
+		try {
+			writeToFirebase(createTimetable(SDH4ModuleList, lecturerList, allRooms, classGroup1, listOfLabRooms, listOfLectureRooms));
+			writeToFirebase(createTimetable(SDH3ModuleList, lecturerList, allRooms, classGroup2, listOfLabRooms, listOfLectureRooms));
+			writeToFirebase(createTimetable(SDH2ModuleList, lecturerList, allRooms, classGroup3, listOfLabRooms, listOfLectureRooms));
+			writeToFirebase(createTimetable(SDH1ModuleList, lecturerList, allRooms, classGroup4, listOfLabRooms, listOfLectureRooms));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public static String[][] createTimetable(ArrayList<Module> moduleList, ArrayList<Lecturer> lecturerList, ArrayList<Room> roomList, ClassGroup classGroup, ArrayList<Room> listOfLabRooms, ArrayList<Room> listOfLectureRooms) {
-		System.out.println("In createtimetable");
 		String timetable[][] = GreedyAlgorithm.greedyAlgorithmSolver(moduleList, lecturerList, roomList, classGroup, listOfLabRooms, listOfLectureRooms);
 		int dayCounter=0, timeslotCounter = 0;
 		//System.out.print("9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00\n");
-		while (dayCounter < 5)
+		while (dayCounter < 5)//Prints timetable contents
 		{
 			while(timeslotCounter < 9)
 			{
-				System.out.print(timetable[dayCounter][timeslotCounter] + "\t");
+				//System.out.print(timetable[dayCounter][timeslotCounter] + "\t");
 				timeslotCounter++;
 			}
 			dayCounter++;
 			if (timeslotCounter == 9)
 			{
 				timeslotCounter = 0;
-				System.out.print("\n");
+				//System.out.print("\n");
 			}
 		}
-		System.out.println("--------------------------------------------------------------");
 		dayCounter = 0;
 		timeslotCounter = 0;
-		while (dayCounter < 5)
+		while (dayCounter < 5)//Prints classgroup timetable
 		{
 			while(timeslotCounter < 9)
 			{
-				System.out.print(classGroup.gettimetable()[dayCounter][timeslotCounter] + "\t");
+				//System.out.print(classGroup.gettimetable()[dayCounter][timeslotCounter] + "\t");
 				timeslotCounter++;
 			}
 			dayCounter++;
 			if (timeslotCounter == 9)
 			{
 				timeslotCounter = 0;
-				System.out.print("\n");
+				//System.out.print("\n");
 			}
 		}
 		//System.exit(0);
-		System.out.println("\n");
-		System.out.println("Finished createTimetable");
+		//System.out.println("\n");
 		return timetable;
 	}
 	
