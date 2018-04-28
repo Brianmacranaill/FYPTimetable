@@ -4,9 +4,20 @@ import timetable.objects.*;
 import timetable.algorithms.*;
 
 import java.awt.List;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -28,14 +39,35 @@ import javafx.stage.Stage;
 public class Main extends Application {
 	
 	static String timetableToCreateOption = "";
+	private static final String DATABASE_URL = "https://timetable-5673f.firebaseio.com";
+	private FirebaseDatabase firebaseDatabase;
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
-	public static void database()
+	public void writeToFirebase() throws IOException//Make this method work with all time slots
 	{
-		
+		FileInputStream serviceAccount = new FileInputStream("C:/Users/Brian/Dropbox/timetableDB/timetable-5673f-firebase-adminsdk-ujdb6-fb9f4122b5.json");
+
+		FirebaseOptions options = new FirebaseOptions.Builder()
+				.setCredentials(GoogleCredentials.fromStream(serviceAccount))
+				.setDatabaseUrl(DATABASE_URL)
+				.build();
+
+		FirebaseApp.initializeApp(options);
+		firebaseDatabase = FirebaseDatabase.getInstance();
+
+		String classGroup = "SDH4";
+		String day = "Monday";
+		String timeSlot = "9";
+		String classAtTime = "module|room\\lecturer";
+
+
+		DatabaseReference ref = firebaseDatabase.getReference(classGroup);
+		ref.child(day).child(timeSlot).setValue(classAtTime);
+
+
 	}
 	
 	@Override
@@ -49,7 +81,7 @@ public class Main extends Application {
 		Label label2 = new Label("Timetable shown here?");
 		
 		double screenSizeMultiplier = .5;//Change this value to change the amount of screen taken by the GUI
-		
+		writeToFirebase();
 		primaryStage.setTitle("Timetable Scheduler");
 		runAlgorithmButton = new Button();
 		runAlgorithmButton.setText("Run Algorithm");
