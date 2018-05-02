@@ -53,18 +53,18 @@ public class GreedyAlgorithm {
 			a = ran.nextInt(days);
 			b = ran.nextInt(timeSlot);
 
-			while(timetable[a][b] != "empty" && temporaryModule.getLecturer().gettimetable()[a][b])
-			{
-				a = ran.nextInt(days);
-				b = ran.nextInt(timeSlot);
-			}
 			if(!temporaryModule.getLectureOrLab())//Lecture, 1 hour timeslot
-			{
+			{			
+				while(timetable[a][b] != "empty" || temporaryModule.getLecturer().gettimetable()[a][b])
+				{
+					a = ran.nextInt(days);
+					b = ran.nextInt(timeSlot);
+				}
 				timetable[a][b] = temporaryModule.getModuleName();
 			}
 			else if(temporaryModule.getLectureOrLab())//Lab, 2 hour.
 			{
-				while(b > 7 ? true : timetable[a][b] != "empty" && timetable[a][b+1] != "empty")
+				while(b > 7 ? true : timetable[a][b] != "empty" || timetable[a][b+1] != "empty" || temporaryModule.getLecturer().gettimetable()[a][b] || temporaryModule.getLecturer().gettimetable()[a][b+1])
 				{
 					a = ran.nextInt(days);
 					b = ran.nextInt(timeSlot);
@@ -120,8 +120,6 @@ public class GreedyAlgorithm {
 		int numLabRooms = labRooms.size();
 		Random ran = new Random();
 		int randomNumber = 0;
-		boolean tempRoomTimetable[][] = new boolean[5][9];
-		boolean tempClassGroupTimetable[][] = new boolean[5][9];
 		//		while(!timetable[a][b].contains("|") && !timetable[a][b].contains("\\"))//"|" checks that a room is assigned, "\\" checks if the lecturer name is assigned
 		//		{
 		if(module.getLectureOrLab() == false)//Lecture
@@ -132,14 +130,9 @@ public class GreedyAlgorithm {
 				randomNumber = ran.nextInt(numLectureRooms);
 			}
 			//Assign lecture room to time slot for class group. Change class timetable from boolean to string, then store module there?
-			tempRoomTimetable = lectureRooms.get(randomNumber).getTimetable();
-			tempRoomTimetable[a][b] = true;
+			lectureRooms.get(randomNumber).settimetable(a, b, true);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
 
-			lectureRooms.get(randomNumber).setTimetable(tempRoomTimetable);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
-
-			tempClassGroupTimetable = classGroup.gettimetable();
-			tempClassGroupTimetable[a][b] = true;
-			classGroup.settimetable(tempClassGroupTimetable);
+			classGroup.settimetable(a, b, true);
 
 			module.getLecturer().settimetable(a, b, true);
 
@@ -154,16 +147,11 @@ public class GreedyAlgorithm {
 				randomNumber = ran.nextInt(numLectureRooms);
 			}
 			//Assign lecture room to time slot for class group. Change class timetable from boolean to string, then store module there?
-			tempRoomTimetable = labRooms.get(randomNumber).getTimetable();
-			tempRoomTimetable[a][b] = true;
-			tempRoomTimetable[a][b+1] = true;
+			labRooms.get(randomNumber).settimetable(a, b, true);
+			labRooms.get(randomNumber).settimetable(a, b+1, true);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
 
-			labRooms.get(randomNumber).setTimetable(tempRoomTimetable);//This and above 3 lines assigns class room's timetable to a temporary timetable, then sets the room's timetable as temp timetable's data
-
-			tempClassGroupTimetable = classGroup.gettimetable();
-			tempClassGroupTimetable[a][b] = true;
-			tempClassGroupTimetable[a][b+1] = true;
-			classGroup.settimetable(tempClassGroupTimetable);
+			classGroup.settimetable(a, b, true);
+			classGroup.settimetable(a, b+1, true);
 
 			module.getLecturer().settimetable(a, b, true);
 			module.getLecturer().settimetable(a, b+1, true);

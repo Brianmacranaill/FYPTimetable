@@ -29,6 +29,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -125,8 +127,6 @@ public class Main extends Application {
 		Button runAlgorithmButton, uploadAlgorithmToDatabaseButton, exit;
 		VBox leftVerticalBox, rightVerticalBox;
 		HBox bottomBox;
-		Label label1 = new Label("Left Box");
-		Label label2 = new Label("Timetable shown here?");
 		
 		double screenSizeMultiplier = .5;//Change this value to change the amount of screen taken by the GUI
 		primaryStage.setTitle("Timetable Scheduler");
@@ -135,8 +135,8 @@ public class Main extends Application {
 		runAlgorithmButton.setOnAction(e -> algorithmStart());//Runs the method that runs the algorithm
 		
 		uploadAlgorithmToDatabaseButton = new Button();
-		uploadAlgorithmToDatabaseButton.setText("Make Timetable Live(NYI)");
-		uploadAlgorithmToDatabaseButton.setOnAction(e -> uploadTimetableToDatabase());
+		uploadAlgorithmToDatabaseButton.setText("Make Timetable Live");
+		//uploadAlgorithmToDatabaseButton.setOnAction(e -> uploadTimetableToDatabase());
 		
 		exit = new Button();
 		exit.setText("Exit");
@@ -146,7 +146,6 @@ public class Main extends Application {
 		bottomBox.getChildren().addAll(runAlgorithmButton, uploadAlgorithmToDatabaseButton, exit);
 		bottomBox.setAlignment(Pos.BASELINE_CENTER);
 		bottomBox.setPadding(new Insets(20, 20, 20, 20));
-		bottomBox.setStyle("-fx-border-style: dashed;");
 		Canvas canvas = new Canvas(400, 300);
 
 		leftVerticalBox = new VBox();//Side with all the buttons, etc.
@@ -158,22 +157,26 @@ public class Main extends Application {
 				"SDH",
 				"Computing Department"
 				);
-		timetableToCreate.setPromptText("What would you like to make a timetable for?");
+		timetableToCreate.setPromptText("What groups you like to make a timetable for?");
 		timetableToCreate.setOnAction(e -> timetableToCreateOption = timetableToCreate.getValue());
 		
-		leftVerticalBox.getChildren().addAll(label1, timetableToCreate, canvas);
+		FileInputStream inputstream = new FileInputStream("C:\\Users\\Brian\\Dropbox\\CitRGB.png");
+		Image image = new Image(inputstream);
+		ImageView imageView = new ImageView(image);
+		imageView.setFitHeight(200);
+		imageView.setFitWidth(200);
+
+		leftVerticalBox.getChildren().addAll(timetableToCreate, canvas);
 		leftVerticalBox.setAlignment(Pos.BASELINE_LEFT);
         leftVerticalBox.setMinWidth(primaryScreenBounds.getWidth() * (screenSizeMultiplier * .3));//Sets leftVerticalBox to half the size of the window
         leftVerticalBox.setMinHeight(0);
         leftVerticalBox.setPadding(new Insets(100,100,100,100));
-        leftVerticalBox.setStyle("-fx-border-style: dashed;");
         
-		rightVerticalBox.getChildren().addAll(label2, canvas);
+		rightVerticalBox.getChildren().addAll(imageView, canvas);
 		rightVerticalBox.setAlignment(Pos.BASELINE_RIGHT);
 		rightVerticalBox.setMinWidth(primaryScreenBounds.getWidth() * (screenSizeMultiplier * .3));//Sets rightVerticalBox to half the size of the window
 		rightVerticalBox.setMinHeight(0);
 		rightVerticalBox.setPadding(new Insets(100,100,100,100));
-		rightVerticalBox.setStyle("-fx-border-style: dashed;");
 		
 		//"root" is the borderpane set up for positioning.
 		root.setLeft(leftVerticalBox);
@@ -208,99 +211,97 @@ public class Main extends Application {
 	
 	/**Method which starts the algorithm**/
 	public static void algorithmStart() {
+		
+		Lecturer lecturer1 = new Lecturer("Larkin Cunningham", assignEmptyTimetable());
+		Lecturer lecturer2 = new Lecturer("Sean McSweeney", assignEmptyTimetable());
+		Lecturer lecturer3 = new Lecturer("Ted Scully", assignEmptyTimetable());
+		Lecturer lecturer4 = new Lecturer("Oonagh O'Brien", assignEmptyTimetable());
+		Lecturer lecturer5 = new Lecturer("Paul Davern", assignEmptyTimetable());
+		Lecturer lecturer6 = new Lecturer("Denis Long", assignEmptyTimetable());
+		Lecturer lecturer7 = new Lecturer("Karl Grabe", assignEmptyTimetable());
+		Lecturer lecturer8 = new Lecturer("Ignacio Castineiras", assignEmptyTimetable());
+		Lecturer lecturer9 = new Lecturer("Paul Rothwell", assignEmptyTimetable());
+		Lecturer lecturer10 = new Lecturer("Mary Davin", assignEmptyTimetable());
+		Lecturer lecturer11 = new Lecturer("Michael Brennan", assignEmptyTimetable());
+		Lecturer lecturer12 = new Lecturer("Cliona Mc Guane", assignEmptyTimetable());
+		Lecturer lecturer13 = new Lecturer("Catherine Frehill", assignEmptyTimetable());
+		Lecturer lecturer14 = new Lecturer("Irene Foley", assignEmptyTimetable());
+		Lecturer lecturer15 = new Lecturer("John Creagh", assignEmptyTimetable());
+		Lecturer lecturer16 = new Lecturer("Marie Nicholson", assignEmptyTimetable());
+		
 		ArrayList<Module> SDH4ModuleList = new ArrayList<Module>();
-		Module AppDevLab = new Module("SOFT8020", "App Development Framework Lab", true, "SDH4");
-		Module AppDevLecture = new Module("SOFT8020", "App Development Framework Lecture", false, "SDH4");
-		Module SoftwareSecurityLab = new Module("COMP8050", "Security for Software Systems Lab", true, "SDH4");
-		Module SoftwareSecurityLecture = new Module("COMP8050", "Security for Software Systems Lecture", false, "SDH4");
-		Module MachineLearningLab = new Module("COMP8043", "Machine Learning Lab", true, "SDH4");
-		Module MachineLearningLecture = new Module("COMP8043", "Machine Learning Lecture", false, "SDH4");
-		Module NoSQLLab = new Module("COMP7037", "NoSQL Data Architectures Lab", true, "SDH4");
-		Module NoSQLLecture = new Module("COMP7037", "NoSQL Data Architectures Lecture", false, "SDH4");
-		Module EmbeddedSystemsLab = new Module("COMP8049", "Embedded Systems Tools & Models Lab", true, "SDH4");
-		Module EmbeddedSystemsLecture = new Module("COMP8049", "Embedded Systems Tools & Models Lecture", false, "SDH4");
-		SDH4ModuleList.add(AppDevLab);
-		SDH4ModuleList.add(AppDevLecture);
-		SDH4ModuleList.add(SoftwareSecurityLab);
-		SDH4ModuleList.add(SoftwareSecurityLecture);
-		SDH4ModuleList.add(MachineLearningLab);
-		SDH4ModuleList.add(MachineLearningLecture);
-		SDH4ModuleList.add(NoSQLLab);
-		SDH4ModuleList.add(NoSQLLecture);
-		SDH4ModuleList.add(EmbeddedSystemsLab);
-		SDH4ModuleList.add(EmbeddedSystemsLecture);
+		SDH4ModuleList.add(new Module("SOFT8020", "App Development Framework Lab", lecturer1, true, "SDH4"));
+		SDH4ModuleList.add(new Module("SOFT8020", "App Development Framework Lecture", lecturer1, false, "SDH4"));
+		SDH4ModuleList.add(new Module("SOFT8020", "App Development Framework Lecture", lecturer1, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8050", "Security for Software Systems Lab", lecturer2, true, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8050", "Security for Software Systems Lecture", lecturer2, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8050", "Security for Software Systems Lecture", lecturer2, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8043", "Machine Learning Lab", lecturer3, true, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8043", "Machine Learning Lecture", lecturer3, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8043", "Machine Learning Lecture", lecturer3, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP7037", "NoSQL Data Architectures Lab", lecturer4, true, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP7037", "NoSQL Data Architectures Lecture", lecturer4, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP7037", "NoSQL Data Architectures Lecture", lecturer4, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8049", "Embedded Systems Tools & Models Lab", lecturer5, true, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8049", "Embedded Systems Tools & Models Lecture", lecturer5, false, "SDH4"));
+		SDH4ModuleList.add(new Module("COMP8049", "Embedded Systems Tools & Models Lecture", lecturer5, false, "SDH4"));
 
 		ArrayList<Module> SDH3ModuleList = new ArrayList<Module>();
-		Module DistributedSystemsLab = new Module("SOFT8023", "Distributed Systems Programming Lab", true, "SDH3");
-		Module DistributedSystemsLecture = new Module("SOFT8023", "Distributed Systems Programming Lecture", false, "SDH3");
-		Module ProgrammingMobileLab = new Module("SOFT7035", "Programming Mobile Devices Lab", true, "SDH3");
-		Module ProgrammingMobileLecture = new Module("SOFT7035", "Programming Mobile Devices Lecture", false, "SDH3");
-		Module AgileProcessesLab = new Module("COMP7039", "Programming Mobile Devices Lab", true, "SDH3");
-		Module AgileProcessesLecture = new Module("COMP7039", "Programming Mobile Devices Lecture", false, "SDH3");
-		Module CProgrammingLab = new Module("SOFT7019", "C Programming Lab", true, "SDH3");
-		Module CProgrammingLecture = new Module("SOFT7019", "C Programming Lecture", false, "SDH3");
-		SDH3ModuleList.add(DistributedSystemsLab);
-		SDH3ModuleList.add(DistributedSystemsLecture);
-		SDH3ModuleList.add(ProgrammingMobileLab);
-		SDH3ModuleList.add(ProgrammingMobileLecture);
-		SDH3ModuleList.add(AgileProcessesLab);
-		SDH3ModuleList.add(AgileProcessesLecture);
-		SDH3ModuleList.add(CProgrammingLab);
-		SDH3ModuleList.add(CProgrammingLecture);
-		SDH3ModuleList.add(NoSQLLab);
-		SDH3ModuleList.add(NoSQLLecture);
+		SDH3ModuleList.add(new Module("SOFT8023", "Distributed Systems Programming Lab", lecturer6, true, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT8023", "Distributed Systems Programming Lecture", lecturer6, false, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT8023", "Distributed Systems Programming Lecture", lecturer6, false, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT7035", "Programming Mobile Devices Lab", lecturer7, true, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT7035", "Programming Mobile Devices Lecture", lecturer7, false, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT7035", "Programming Mobile Devices Lecture", lecturer7, false, "SDH3"));
+		SDH3ModuleList.add(new Module("COMP7039", "Programming Mobile Devices Lab", lecturer1, true, "SDH3"));
+		SDH3ModuleList.add(new Module("COMP7039", "Programming Mobile Devices Lecture", lecturer1, false, "SDH3"));
+		SDH3ModuleList.add(new Module("COMP7039", "Programming Mobile Devices Lecture", lecturer1, false, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT7019", "C Programming Lab", lecturer8, true, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT7019", "C Programming Lecture", lecturer8, false, "SDH3"));
+		SDH3ModuleList.add(new Module("SOFT7019", "C Programming Lecture", lecturer8, false, "SDH3"));
+		SDH3ModuleList.add(new Module("COMP7037", "NoSQL Data Architectures Lab", lecturer4, true, "SDH4"));
+		SDH3ModuleList.add(new Module("COMP7037", "NoSQL Data Architectures Lecture", lecturer4, false, "SDH4"));
+		SDH3ModuleList.add(new Module("COMP7037", "NoSQL Data Architectures Lecture", lecturer4, false, "SDH4"));
 		
 		ArrayList<Module> SDH2ModuleList = new ArrayList<Module>();
-		Module objectOrientedPrinciplesLab = new Module("SOFT7004", "Object Oriented Principles Lab", true, "SDH2");
-		Module objectOrientedPrinciplesLecture = new Module("SOFT7004", "Object Oriented Principles Lecture", false, "SDH2");
-		Module introToDatabasesLab = new Module("COMP6041", "Introduction to Databases Lab", true, "SDH2");
-		Module introToDatabasesLecture = new Module("COMP6041", "Introduction to Databases Lecture", false, "SDH2");
-		Module operatingSystemsInPracticeLab = new Module("COMP6042", "Operating Systems In Practice Lab", true, "SDH2");
-		Module operatingSystemsInPracticeLecture = new Module("COMP6042", "perating Systems In Practice Lecture", false, "SDH2");
-		Module requirementsEngineeringLab = new Module("SOFT7007", "Requirements Engineering Lab", true, "SDH2");
-		Module requirementsEngineeringLecture = new Module("SOFT7007", "Requirements Engineering Lecture", false, "SDH2");
-		Module linearDataStructuresLab = new Module("COMP7035", "Linear Data Struct & Alg Lab", true, "SDH2");
-		Module linearDataStructuresLecture = new Module("COMP7035", "Linear Data Struct & Alg Lecture", false, "SDH2");
-		Module discreteMathsLab = new Module("MATH6004", "Discrete Maths Lab", true, "SDH2");
-		Module discreteMathsLecture = new Module("MATH6004", "Discrete Maths Lecture", false, "SDH2");
-		SDH2ModuleList.add(objectOrientedPrinciplesLab);
-		SDH2ModuleList.add(objectOrientedPrinciplesLecture);
-		SDH2ModuleList.add(introToDatabasesLab);
-		SDH2ModuleList.add(introToDatabasesLecture);
-		SDH2ModuleList.add(operatingSystemsInPracticeLab);
-		SDH2ModuleList.add(operatingSystemsInPracticeLecture);
-		SDH2ModuleList.add(requirementsEngineeringLab);
-		SDH2ModuleList.add(requirementsEngineeringLecture);
-		SDH2ModuleList.add(linearDataStructuresLab);
-		SDH2ModuleList.add(linearDataStructuresLecture);
-		SDH2ModuleList.add(discreteMathsLab);
-		SDH2ModuleList.add(discreteMathsLecture);
+		SDH2ModuleList.add(new Module("SOFT7004", "Object Oriented Principles Lab", lecturer6, true, "SDH2"));
+		SDH2ModuleList.add(new Module("SOFT7004", "Object Oriented Principles Lecture", lecturer6, false, "SDH2"));
+		SDH2ModuleList.add(new Module("SOFT7004", "Object Oriented Principles Lecture", lecturer6, false, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP6041", "Introduction to Databases Lab", lecturer4, true, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP6041", "Introduction to Databases Lecture", lecturer4, false, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP6041", "Introduction to Databases Lecture", lecturer4, false, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP6042", "Operating Systems In Practice Lab", lecturer9, true, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP6042", "Operating Systems In Practice Lecture", lecturer9, false, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP6042", "Operating Systems In Practice Lecture", lecturer9, false, "SDH2"));
+		SDH2ModuleList.add(new Module("SOFT7007", "Requirements Engineering Lab", lecturer10, true, "SDH2"));
+		SDH2ModuleList.add(new Module("SOFT7007", "Requirements Engineering Lecture", lecturer10, false, "SDH2"));
+		SDH2ModuleList.add(new Module("SOFT7007", "Requirements Engineering Lecture", lecturer10, false, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP7035", "Linear Data Struct & Alg Lab", lecturer8, true, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP7035", "Linear Data Struct & Alg Lecture", lecturer8, false, "SDH2"));
+		SDH2ModuleList.add(new Module("COMP7035", "Linear Data Struct & Alg Lecture", lecturer8, false, "SDH2"));
+		SDH2ModuleList.add(new Module("MATH6004", "Discrete Maths Lab", lecturer11, true, "SDH2"));
+		SDH2ModuleList.add(new Module("MATH6004", "Discrete Maths Lecture", lecturer11, false, "SDH2"));
+		SDH2ModuleList.add(new Module("MATH6004", "Discrete Maths Lecture", lecturer11, false, "SDH2"));
 		
 		ArrayList<Module> SDH1ModuleList = new ArrayList<Module>();
-		Module programmingFundamentalsLab = new Module("SOFT6018", "Programming Fundamentals Lab", true, "SDH1");
-		Module programmingFundamentalsLecture = new Module("SOFT6018", "Programming Fundamentals Lecture", false, "SDH1");
-		Module CITLab = new Module("CMOD6001", "Creativity Innovation & Teamwork Lab", true, "SDH1");
-		Module CITLecture = new Module("CMOD6001", "Creativity Innovation & Teamwork Lecture", false, "SDH1");
-		Module webDevFundamentalsLab = new Module("SOFT6007", "Web Development Fundamentals Lab", true, "SDH1");
-		Module webDevFundamentalsLecture = new Module("SOFT6007", "Web Development Fundamentals Lecture", false, "SDH1");
-		Module computerArchitectureLab = new Module("COMH6002", "Computer Architecture Lab", true, "SDH1");
-		Module computerArchitectureLecture = new Module("COMH6002", "Computer Architecture Lecture", false, "SDH1");
-		Module computerSecurityPrinciplesLab = new Module("COMP6035", "Computer Security Principles Lab", true, "SDH1");
-		Module computerSecurityPrinciplesLecture = new Module("COMP6035", "Computer Security Principles Lecture", false, "SDH1");
-		Module MathsForCSLab = new Module("MATH6055", "Maths For Computer Science Lab", true, "SDH1");
-		Module MathsForCSLecture = new Module("MATH6055", "Maths For Computer Science Lecture", false, "SDH1");
-		SDH1ModuleList.add(programmingFundamentalsLab);
-		SDH1ModuleList.add(programmingFundamentalsLecture);
-		SDH1ModuleList.add(CITLab);
-		SDH1ModuleList.add(CITLecture);
-		SDH1ModuleList.add(webDevFundamentalsLab);
-		SDH1ModuleList.add(webDevFundamentalsLecture);
-		SDH1ModuleList.add(computerArchitectureLab);
-		SDH1ModuleList.add(computerArchitectureLecture);
-		SDH1ModuleList.add(computerSecurityPrinciplesLab);
-		SDH1ModuleList.add(computerSecurityPrinciplesLecture);
-		SDH1ModuleList.add(MathsForCSLab);
-		SDH1ModuleList.add(MathsForCSLecture);
+		SDH1ModuleList.add(new Module("SOFT6018", "Programming Fundamentals Lab", lecturer12, true, "SDH1"));
+		SDH1ModuleList.add(new Module("SOFT6018", "Programming Fundamentals Lecture", lecturer12, false, "SDH1"));
+		SDH1ModuleList.add(new Module("SOFT6018", "Programming Fundamentals Lecture", lecturer12, false, "SDH1"));
+		SDH1ModuleList.add(new Module("CMOD6001", "Creativity Innovation & Teamwork Lab", lecturer13, true, "SDH1"));
+		SDH1ModuleList.add(new Module("CMOD6001", "Creativity Innovation & Teamwork Lecture", lecturer13, false, "SDH1"));
+		SDH1ModuleList.add(new Module("CMOD6001", "Creativity Innovation & Teamwork Lecture", lecturer13, false, "SDH1"));
+		SDH1ModuleList.add(new Module("SOFT6007", "Web Development Fundamentals Lab", lecturer14, true, "SDH1"));
+		SDH1ModuleList.add(new Module("SOFT6007", "Web Development Fundamentals Lecture", lecturer14, false, "SDH1"));
+		SDH1ModuleList.add(new Module("SOFT6007", "Web Development Fundamentals Lecture", lecturer14, false, "SDH1"));
+		SDH1ModuleList.add(new Module("COMH6002", "Computer Architecture Lab", lecturer15, true, "SDH1"));
+		SDH1ModuleList.add(new Module("COMH6002", "Computer Architecture Lecture", lecturer15, false, "SDH1"));
+		SDH1ModuleList.add(new Module("COMH6002", "Computer Architecture Lecture", lecturer15, false, "SDH1"));
+		SDH1ModuleList.add(new Module("COMP6035", "Computer Security Principles Lab", lecturer2, true, "SDH1"));
+		SDH1ModuleList.add(new Module("COMP6035", "Computer Security Principles Lecture", lecturer2, false, "SDH1"));
+		SDH1ModuleList.add(new Module("COMP6035", "Computer Security Principles Lecture", lecturer2, false, "SDH1"));
+		SDH1ModuleList.add(new Module("MATH6055", "Maths For Computer Science Lab", lecturer16, true, "SDH1"));
+		SDH1ModuleList.add(new Module("MATH6055", "Maths For Computer Science Lecture", lecturer16, false, "SDH1"));
+		SDH1ModuleList.add(new Module("MATH6055", "Maths For Computer Science Lecture", lecturer16, false, "SDH1"));
 		
 		ArrayList<ClassGroup> classGroupList = new  ArrayList<ClassGroup>();
 		ClassGroup classGroup1 = new ClassGroup("Software Development 4", "SDH4", 30, assignEmptyTimetable());
@@ -312,80 +313,7 @@ public class Main extends Application {
 		classGroupList.add(classGroup3);
 		classGroupList.add(classGroup4);
 		
-		Lecturer lecturer1 = new Lecturer("Larkin Cunningham", assignEmptyTimetable());
-		AppDevLab.setLecturer(lecturer1);
-		AppDevLecture.setLecturer(lecturer1);
-		AgileProcessesLab.setLecturer(lecturer1);
-		AgileProcessesLecture.setLecturer(lecturer1);
-		
-		Lecturer lecturer2 = new Lecturer("Sean McSweeney", assignEmptyTimetable());
-		SoftwareSecurityLab.setLecturer(lecturer2);
-		SoftwareSecurityLecture.setLecturer(lecturer2);
-		computerSecurityPrinciplesLab.setLecturer(lecturer2);
-		computerSecurityPrinciplesLecture.setLecturer(lecturer2);
-		
-		Lecturer lecturer3 = new Lecturer("Ted Scully", assignEmptyTimetable());
-		MachineLearningLab.setLecturer(lecturer3);
-		MachineLearningLecture.setLecturer(lecturer3);
-		
-		Lecturer lecturer4 = new Lecturer("Oonagh O'Brien", assignEmptyTimetable());
-		NoSQLLab.setLecturer(lecturer4);
-		NoSQLLecture.setLecturer(lecturer4);
-		introToDatabasesLab.setLecturer(lecturer4);
-		introToDatabasesLecture.setLecturer(lecturer4);
-		
-		Lecturer lecturer5 = new Lecturer("Paul Davern", assignEmptyTimetable());
-		EmbeddedSystemsLab.setLecturer(lecturer5);
-		EmbeddedSystemsLecture.setLecturer(lecturer5);
-		
-		Lecturer lecturer6 = new Lecturer("Denis Long", assignEmptyTimetable());
-		DistributedSystemsLab.setLecturer(lecturer6);
-		DistributedSystemsLecture.setLecturer(lecturer6);
-		objectOrientedPrinciplesLab.setLecturer(lecturer6);
-		objectOrientedPrinciplesLecture.setLecturer(lecturer6);
 
-		Lecturer lecturer7 = new Lecturer("Karl Grabe", assignEmptyTimetable());
-		ProgrammingMobileLab.setLecturer(lecturer7);
-		ProgrammingMobileLecture.setLecturer(lecturer7);
-		
-		Lecturer lecturer8 = new Lecturer("Ignacio Castineiras", assignEmptyTimetable());
-		CProgrammingLab.setLecturer(lecturer8);
-		CProgrammingLecture.setLecturer(lecturer8);
-		linearDataStructuresLab.setLecturer(lecturer8);
-		linearDataStructuresLecture.setLecturer(lecturer8);
-		
-		Lecturer lecturer9 = new Lecturer("Paul Rothwell", assignEmptyTimetable());
-		operatingSystemsInPracticeLab.setLecturer(lecturer9);
-		operatingSystemsInPracticeLecture.setLecturer(lecturer9);
-		
-		Lecturer lecturer10 = new Lecturer("Mary Davin", assignEmptyTimetable());
-		requirementsEngineeringLab.setLecturer(lecturer10);
-		requirementsEngineeringLecture.setLecturer(lecturer10);
-		
-		Lecturer lecturer11 = new Lecturer("Michael Brennan", assignEmptyTimetable());
-		discreteMathsLab.setLecturer(lecturer11);
-		discreteMathsLecture.setLecturer(lecturer11);
-		
-		Lecturer lecturer12 = new Lecturer("Cliona Mc Guane", assignEmptyTimetable());
-		programmingFundamentalsLab.setLecturer(lecturer12);
-		programmingFundamentalsLecture.setLecturer(lecturer12);
-		
-		Lecturer lecturer13 = new Lecturer("Catherine Frehill", assignEmptyTimetable());
-		CITLab.setLecturer(lecturer13);
-		CITLecture.setLecturer(lecturer13);
-		
-		Lecturer lecturer14 = new Lecturer("Irene Foley", assignEmptyTimetable());
-		webDevFundamentalsLab.setLecturer(lecturer14);
-		webDevFundamentalsLecture.setLecturer(lecturer14);
-		
-		Lecturer lecturer15 = new Lecturer("John Creagh", assignEmptyTimetable());
-		computerArchitectureLab.setLecturer(lecturer15);
-		computerArchitectureLecture.setLecturer(lecturer15);
-		
-		Lecturer lecturer16 = new Lecturer("Marie Nicholson", assignEmptyTimetable());
-		MathsForCSLab.setLecturer(lecturer16);
-		MathsForCSLecture.setLecturer(lecturer16);
-		
 		ArrayList<Lecturer> lecturerList = new ArrayList<Lecturer>();//Contains all lecturers
 		lecturerList.add(lecturer1);
 		lecturerList.add(lecturer2);
@@ -439,9 +367,9 @@ public class Main extends Application {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
+		}		
 	}
+	
 	
 	public static String[][] createTimetable(ArrayList<Module> moduleList, ArrayList<Lecturer> lecturerList, ArrayList<Room> roomList, ClassGroup classGroup, ArrayList<Room> listOfLabRooms, ArrayList<Room> listOfLectureRooms) {
 		String timetable[][] = GreedyAlgorithm.greedyAlgorithmSolver(moduleList, lecturerList, roomList, classGroup, listOfLabRooms, listOfLectureRooms);
@@ -474,31 +402,12 @@ public class Main extends Application {
 			if (timeslotCounter == 9)
 			{
 				timeslotCounter = 0;
-				//System.out.print("\n");
+				System.out.print("\n");
 			}
 		}
 		//System.exit(0);
 		//System.out.println("\n");
 		return timetable;
-	}
-	
-	/**When complete, will upload database to timetable**/
-	public static void uploadTimetableToDatabase() {
-		System.out.println("Pretending that the timetable is uploading to the database....");
-		int i = 0;
-		try {
-			while(i <= 5000)
-			{
-				TimeUnit.MILLISECONDS.sleep(1);
-				System.out.println("Pretend upload to database " + i);
-				i++;
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Problem with pretend upload. Please try again.");
-		}
-		System.out.println("Pretend upload complete. Exit the application");
 	}
 	
 	/**Fills roomTimetable with "false"**/

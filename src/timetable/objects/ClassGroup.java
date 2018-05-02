@@ -35,8 +35,8 @@ public class ClassGroup {
 	public boolean[][] gettimetable() {
 		return timetable;
 	}
-	public void settimetable(boolean[][] timetable) {
-		this.timetable = timetable;
+	public void settimetable(int a, int b, boolean timetable) {
+		this.timetable[a][b] = timetable;
 	}
 	@Override
 	public String toString() {

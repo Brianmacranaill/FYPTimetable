@@ -36,8 +36,8 @@ public class Room {
 	public boolean[][] getTimetable() {
 		return timetable;
 	}
-	public void setTimetable(boolean[][] timetable) {
-		this.timetable = timetable;
+	public void settimetable(int a, int b, boolean timetable) {
+		this.timetable[a][b] = timetable;
 	}
 	
 

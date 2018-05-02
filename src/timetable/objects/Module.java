@@ -8,11 +8,12 @@ public class Module {
 	String className;
 	
 
-	public Module(String moduleCode, String moduleName, Boolean lectureOrLab, String className) {
+	public Module(String moduleCode, String moduleName, Lecturer lecturer, Boolean lectureOrLab, String className) {
 		this.moduleCode = moduleCode;
 		this.moduleName = moduleName;
 		this.lectureOrLab = lectureOrLab;
 		this.className = className;
+		this.lecturer = lecturer;
 	}
 
 	public String getModuleCode() {
@@ -30,9 +31,7 @@ public class Module {
 	public Lecturer getLecturer() {
 		return lecturer;
 	}
-	public void setLecturer(Lecturer lecturer) {
-		this.lecturer = lecturer;
-	}
+
 	public Boolean getLectureOrLab() {
 		return lectureOrLab;
 	}
