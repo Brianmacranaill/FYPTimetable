@@ -59,7 +59,7 @@ public class Main extends Application {
 		FirebaseApp.initializeApp(options);
 		firebaseDatabase = FirebaseDatabase.getInstance();
 		DatabaseReference ref = firebaseDatabase.getReference("classes");
-		ref.removeValue();
+		
 	}
 	
 	public static String[] splitStringForTimetable(String timeslotData) {
@@ -88,7 +88,7 @@ public class Main extends Application {
 		dayCounter = 0;
 		timeSlotCounter = 0;
 		DatabaseReference ref = firebaseDatabase.getReference("classes");
-		
+		DatabaseReference lecturerRef = firebaseDatabase.getReference("lecturers");
 		while (dayCounter < 5)//Use this loop to split stuff and add to the database
 		{
 			while(timeSlotCounter < 9)
@@ -97,6 +97,7 @@ public class Main extends Application {
 					splitStorage = splitStringForTimetable(timetable[dayCounter][timeSlotCounter]);
 					//Upload to database here
 					ref.child(splitStorage[3]).child(String.valueOf(dayCounter)).child(String.valueOf(timeSlotCounter)).child(splitStorage[0]).child(splitStorage[2]).setValueAsync(splitStorage[1]);
+					lecturerRef.child(splitStorage[2]).child(String.valueOf(dayCounter)).child(String.valueOf(timeSlotCounter)).child(splitStorage[0]).child(splitStorage[3]).setValueAsync(splitStorage[1]);
 				}
 				//System.out.print(timetable[dayCounter][timeSlotCounter] + "\t");
 				timeSlotCounter++;
@@ -108,13 +109,6 @@ public class Main extends Application {
 				//System.out.print("\n");
 			}
 		}
-		
-		
-		
-		//splitStringForTimetable(classAtTime);
-
-//		DatabaseReference ref = firebaseDatabase.getReference(classes);
-//		ref.child(classGroup).child(day).child(timeSlot).setValueAsync(classAtTime);
 
 	}
 	
@@ -358,6 +352,10 @@ public class Main extends Application {
 		allRooms.addAll(listOfLabRooms);
 		allRooms.addAll(listOfLectureRooms);
 		
+		DatabaseReference ref = firebaseDatabase.getReference("classes");
+		DatabaseReference lecturerRef = firebaseDatabase.getReference("lecturers");
+		ref.removeValue();
+		lecturerRef.removeValue();
 		//greedyalgorithm call here for classes
 		try {
 			writeToFirebase(createTimetable(SDH4ModuleList, lecturerList, allRooms, classGroup1, listOfLabRooms, listOfLectureRooms));
