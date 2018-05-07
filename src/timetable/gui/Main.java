@@ -27,6 +27,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -122,14 +123,21 @@ public class Main extends Application {
 		VBox leftVerticalBox, rightVerticalBox;
 		HBox bottomBox;
 		
-		double screenSizeMultiplier = .5;//Change this value to change the amount of screen taken by the GUI
+		ChoiceBox<String> choiceBox = new ChoiceBox<>();
+		choiceBox.getItems().addAll("Greedy Algorithm");
+		choiceBox.setValue("Greedy Algorithm");
+		
+		double screenSizeMultiplier = .45;//Change this value to change the amount of screen taken by the GUI
 		primaryStage.setTitle("Timetable Scheduler");
 		runAlgorithmButton = new Button();
-		runAlgorithmButton.setText("Run Algorithm");
-		runAlgorithmButton.setOnAction(e -> algorithmStart());//Runs the method that runs the algorithm
+		runAlgorithmButton.setText("Create Timetable");
+		if (choiceBox.getValue() == "Greedy Algorithm") {
+			runAlgorithmButton.setOnAction(e -> algorithmStart());//Runs the method that runs the algorithm
+		}
 		
-		uploadAlgorithmToDatabaseButton = new Button();
-		uploadAlgorithmToDatabaseButton.setText("Make Timetable Live");
+		
+		//uploadAlgorithmToDatabaseButton = new Button();
+		//uploadAlgorithmToDatabaseButton.setText("Make Timetable Live");
 		//uploadAlgorithmToDatabaseButton.setOnAction(e -> uploadTimetableToDatabase());
 		
 		exit = new Button();
@@ -137,7 +145,7 @@ public class Main extends Application {
 		exit.setOnAction(e -> System.exit(0));
 		
 		bottomBox = new HBox(5);
-		bottomBox.getChildren().addAll(runAlgorithmButton, uploadAlgorithmToDatabaseButton, exit);
+		bottomBox.getChildren().addAll(runAlgorithmButton, exit);//uploadAlgorithmToDatabaseButton, exit);
 		bottomBox.setAlignment(Pos.BASELINE_CENTER);
 		bottomBox.setPadding(new Insets(20, 20, 20, 20));
 		Canvas canvas = new Canvas(400, 300);
@@ -154,13 +162,18 @@ public class Main extends Application {
 		timetableToCreate.setPromptText("What groups you like to make a timetable for?");
 		timetableToCreate.setOnAction(e -> timetableToCreateOption = timetableToCreate.getValue());
 		
-		FileInputStream inputstream = new FileInputStream("C:\\Users\\Brian\\Dropbox\\CitRGB.png");
+		FileInputStream inputstream = new FileInputStream("C:\\Users\\Brian\\Dropbox\\\\FYPPictures\\CitRGB.png");
 		Image image = new Image(inputstream);
 		ImageView imageView = new ImageView(image);
 		imageView.setFitHeight(200);
 		imageView.setFitWidth(200);
-
-		leftVerticalBox.getChildren().addAll(timetableToCreate, canvas);
+		
+		Label algorithmChoice = new Label();
+		algorithmChoice.setText("Select which algorithm you would like to chose");
+		algorithmChoice.setAlignment(Pos.CENTER_RIGHT);
+		algorithmChoice.setStyle("-fx-text-fill: #ffffffff; -fx-font-size: 9pt ;");
+		
+		leftVerticalBox.getChildren().addAll(algorithmChoice, choiceBox, canvas);//timetableToCreate, canvas);
 		leftVerticalBox.setAlignment(Pos.BASELINE_LEFT);
         leftVerticalBox.setMinWidth(primaryScreenBounds.getWidth() * (screenSizeMultiplier * .3));//Sets leftVerticalBox to half the size of the window
         leftVerticalBox.setMinHeight(0);
@@ -365,46 +378,46 @@ public class Main extends Application {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 	
 	public static String[][] createTimetable(ArrayList<Module> moduleList, ArrayList<Lecturer> lecturerList, ArrayList<Room> roomList, ClassGroup classGroup, ArrayList<Room> listOfLabRooms, ArrayList<Room> listOfLectureRooms) {
 		String timetable[][] = GreedyAlgorithm.greedyAlgorithmSolver(moduleList, lecturerList, roomList, classGroup, listOfLabRooms, listOfLectureRooms);
-		int dayCounter=0, timeslotCounter = 0;
-		//System.out.print("9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00\n");
-		while (dayCounter < 5)//Prints timetable contents
-		{
-			while(timeslotCounter < 9)
-			{
-				//System.out.print(timetable[dayCounter][timeslotCounter] + "\t");
-				timeslotCounter++;
-			}
-			dayCounter++;
-			if (timeslotCounter == 9)
-			{
-				timeslotCounter = 0;
-				//System.out.print("\n");
-			}
-		}
-		dayCounter = 0;
-		timeslotCounter = 0;
-		while (dayCounter < 5)//Prints classgroup timetable
-		{
-			while(timeslotCounter < 9)
-			{
-				//System.out.print(classGroup.gettimetable()[dayCounter][timeslotCounter] + "\t");
-				timeslotCounter++;
-			}
-			dayCounter++;
-			if (timeslotCounter == 9)
-			{
-				timeslotCounter = 0;
-				System.out.print("\n");
-			}
-		}
-		//System.exit(0);
-		//System.out.println("\n");
+//		int dayCounter=0, timeslotCounter = 0;
+//		System.out.print("9:00\t10:00\t11:00\t12:00\t13:00\t14:00\t15:00\t16:00\t17:00\n");
+//		while (dayCounter < 5)//Prints timetable contents
+//		{
+//			while(timeslotCounter < 9)
+//			{
+//				System.out.print(timetable[dayCounter][timeslotCounter] + "\t");
+//				timeslotCounter++;
+//			}
+//			dayCounter++;
+//			if (timeslotCounter == 9)
+//			{
+//				timeslotCounter = 0;
+//				System.out.print("\n");
+//			}
+//		}
+//		dayCounter = 0;
+//		timeslotCounter = 0;
+//		while (dayCounter < 5)//Prints classgroup timetable
+//		{
+//			while(timeslotCounter < 9)
+//			{
+//				System.out.print(classGroup.gettimetable()[dayCounter][timeslotCounter] + "\t");
+//				timeslotCounter++;
+//			}
+//			dayCounter++;
+//			if (timeslotCounter == 9)
+//			{
+//				timeslotCounter = 0;
+//				System.out.print("\n");
+//			}
+//		}
+//		System.exit(0);
+//		System.out.println("\n");
 		return timetable;
 	}
 	
