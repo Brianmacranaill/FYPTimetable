@@ -128,7 +128,8 @@ public class Main extends Application {
 		choiceBox.setValue("Greedy Algorithm");
 		
 		double screenSizeMultiplier = .45;//Change this value to change the amount of screen taken by the GUI
-		primaryStage.setTitle("Timetable Scheduler");
+		primaryStage.setTitle("CIT Timetable Scheduler");
+		primaryStage.getIcons().add(new Image(getClass().getResource("CitRGB.png").toExternalForm()));
 		runAlgorithmButton = new Button();
 		runAlgorithmButton.setText("Create Timetable");
 		if (choiceBox.getValue() == "Greedy Algorithm") {
